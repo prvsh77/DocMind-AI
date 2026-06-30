@@ -152,7 +152,7 @@ python -m alembic upgrade head
 
 python seed.py
 
-python -m uvicorn app.main:app --reload --port 8080
+python -m uvicorn app.main:app --reload --port 8000
 ```
 
 ---

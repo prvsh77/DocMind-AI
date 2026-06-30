@@ -10,7 +10,7 @@ const readNumber = (value: string | undefined, fallback: number) => {
 };
 
 export const env: AppEnv = {
-  apiBaseUrl: import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8080/api",
+  apiBaseUrl: import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8000/api",
   apiTimeoutMs: readNumber(import.meta.env.VITE_API_TIMEOUT_MS, 30000),
   appName: import.meta.env.VITE_APP_NAME ?? "DocMind AI",
 };
