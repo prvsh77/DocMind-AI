@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="src/assets/banner.png" alt="DocMind AI Dashboard" width="100%">
+  <img src="src/assets/banner.png" alt="DocMind AI Banner" width="100%">
 </p>
 
 <h1 align="center">🧠 DocMind AI</h1>
@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  Upload • Extract • Search • Chat
+Upload • Extract • Search • Chat • Analyze
 </p>
 
 <p align="center">
@@ -24,60 +24,152 @@
 
 </p>
 
+<p align="center">
+
+🌐 **Live Demo:** https://doc-mind-ai-ashy.vercel.app
+
+📚 **API Docs:** https://docmind-ai-268e.onrender.com/docs
+
+⭐ If you found this project useful, consider giving it a star.
+
+</p>
+
 ---
 
 # 📖 Overview
 
-DocMind AI is a full-stack AI-powered Document Intelligence platform that enables users to upload documents, extract structured information using AI, perform semantic search, and chat with their documents using Retrieval-Augmented Generation (RAG).
+DocMind AI is a production-ready AI-powered Document Intelligence Platform built with **FastAPI**, **React**, **PostgreSQL**, and **ChromaDB**.
 
-Built with **FastAPI**, **React**, **PostgreSQL**, **ChromaDB**, and modern AI models, DocMind AI demonstrates an end-to-end document processing pipeline—from OCR to conversational AI.
+The application enables users to upload PDFs and images, extract structured information using OCR and AI, perform semantic search through vector embeddings, and interact with documents using Retrieval-Augmented Generation (RAG).
+
+It demonstrates a complete AI document processing pipeline from ingestion to conversational document intelligence.
 
 ---
 
-# ✨ Features
+# ✨ Key Features
 
-### 📄 Intelligent Document Processing
+## 📄 Intelligent Document Processing
 
-- Upload PDF, PNG, and JPG documents
+- PDF, PNG and JPG uploads
 - OCR-based text extraction
-- AI-powered document classification
-- Structured information extraction
+- AI document classification
+- Structured field extraction
 - Automatic document summarization
+- Confidence score generation
 
-### 🔍 Semantic Search
+---
 
-- Vector embeddings with BAAI BGE
-- ChromaDB vector database
+## 🔍 Semantic Search
+
+- Vector embeddings
+- ChromaDB Vector Database
 - Similarity search
+- Keyword search
 - Highlighted search results
-- AI-generated summaries
+- AI-powered summaries
 
-### 💬 AI Chat (RAG)
+---
 
-- Retrieval-Augmented Generation
-- Context-aware document conversations
-- Source citations
+## 💬 AI Chat
+
+- Retrieval-Augmented Generation (RAG)
+- Context-aware conversations
 - Multi-document retrieval
-- Local embedding support
+- Source citations
+- Conversation history
 
-### 📊 Analytics Dashboard
+---
+
+## 📊 Analytics Dashboard
 
 - Document statistics
 - Upload trends
 - Processing success metrics
-- Confidence score analysis
-- Search & chat analytics
-
-### 🔐 Authentication
-
-- JWT Authentication
-- User Registration & Login
-- Protected Routes
-- Secure API Access
+- Confidence score analytics
+- Search analytics
+- Chat analytics
 
 ---
 
-# 🛠 Tech Stack
+## 🔐 Authentication
+
+- JWT Authentication
+- Secure Login
+- User Registration
+- Protected Routes
+- Role-based API Security
+
+---
+
+# ⭐ Project Highlights
+
+- Production-ready Full Stack AI Application
+- OCR Document Understanding
+- AI-powered Information Extraction
+- Semantic Search using Vector Embeddings
+- Retrieval-Augmented Generation (RAG)
+- FastAPI REST APIs
+- PostgreSQL + Alembic
+- ChromaDB Integration
+- Cloud Deployment on Render & Vercel
+
+---
+
+# 🏗 System Architecture
+
+```text
+                   React + Vite
+                      (Vercel)
+                          │
+                          │ REST API
+                          ▼
+               FastAPI Backend (Render)
+                          │
+     ┌────────────────────┼────────────────────┐
+     │                    │                    │
+     ▼                    ▼                    ▼
+ Neon PostgreSQL      ChromaDB           Gemini/OpenAI
+     │             Vector Database          AI Models
+     │
+     ▼
+Document Metadata
+```
+
+---
+
+# 🤖 AI Processing Pipeline
+
+```text
+Document Upload
+        │
+        ▼
+OCR Extraction
+        │
+        ▼
+Document Classification
+        │
+        ▼
+Field Extraction
+        │
+        ▼
+Summary Generation
+        │
+        ▼
+Embedding Generation
+        │
+        ▼
+ChromaDB Storage
+        │
+        ▼
+Semantic Search
+        │
+        ▼
+AI Chat (RAG)
+```
+
+---
+
+# 🛠 Technology Stack
 
 ## Frontend
 
@@ -86,9 +178,11 @@ Built with **FastAPI**, **React**, **PostgreSQL**, **ChromaDB**, and modern AI m
 - Vite
 - Tailwind CSS
 - React Query
-- Recharts
 - React Hook Form
+- Recharts
 - Zod
+
+---
 
 ## Backend
 
@@ -96,46 +190,59 @@ Built with **FastAPI**, **React**, **PostgreSQL**, **ChromaDB**, and modern AI m
 - SQLAlchemy
 - Alembic
 - PostgreSQL
-- JWT Authentication
 - AsyncPG
+- JWT Authentication
+
+---
 
 ## AI & Machine Learning
 
 - PaddleOCR
 - Google Gemini
 - OpenAI
+- Sentence Transformers
 - ChromaDB
-- BAAI BGE Embeddings
+- Vector Embeddings
 - Semantic Search
 - Retrieval-Augmented Generation (RAG)
 
 ---
 
-# 📸 Application Preview
+# 📸 Screenshots
 
-<p align="center">
-<img src="assets/dashboard.png" width="100%">
-</p>
+| Dashboard | Upload |
+|-----------|--------|
+| *(Add Screenshot)* | *(Add Screenshot)* |
+
+| Search | AI Chat |
+|---------|---------|
+| *(Add Screenshot)* | *(Add Screenshot)* |
+
+| Analytics | Document Details |
+|------------|-----------------|
+| *(Add Screenshot)* | *(Add Screenshot)* |
 
 ---
 
 # 🚀 Getting Started
 
-## Clone the Repository
+## Clone Repository
 
 ```bash
 git clone https://github.com/prvsh77/DocMind-AI.git
-
 cd DocMind-AI
 ```
+
+---
 
 ## Frontend
 
 ```bash
 npm install
-
 npm run dev
 ```
+
+---
 
 ## Backend
 
@@ -144,6 +251,8 @@ cd server
 
 python -m venv .venv
 
+source .venv/bin/activate
+# Windows
 .venv\Scripts\activate
 
 pip install -r requirements.txt
@@ -152,14 +261,38 @@ python -m alembic upgrade head
 
 python seed.py
 
-python -m uvicorn app.main:app --reload --port 8000
+python -m uvicorn app.main:app --reload
+```
+
+---
+
+# ⚙ Environment Variables
+
+## Frontend
+
+```env
+VITE_API_BASE_URL=
+VITE_API_TIMEOUT_MS=
+```
+
+---
+
+## Backend
+
+```env
+DATABASE_URL=
+JWT_SECRET_KEY=
+JWT_ALGORITHM=
+OPENAI_API_KEY=
+GEMINI_API_KEY=
+UPLOAD_DIR=
 ```
 
 ---
 
 # 📂 Project Structure
 
-```
+```text
 DocMind-AI
 │
 ├── server
@@ -170,7 +303,6 @@ DocMind-AI
 │   │   ├── database
 │   │   ├── models
 │   │   └── schemas
-│   │
 │   └── migrations
 │
 ├── src
@@ -180,42 +312,62 @@ DocMind-AI
 │   └── api
 │
 ├── assets
-│
 ├── README.md
 └── package.json
 ```
 
 ---
 
-# 🎯 Roadmap
+# ☁ Deployment
 
-- ✅ OCR Processing
-- ✅ AI Classification
-- ✅ Structured Data Extraction
-- ✅ Semantic Search
-- ✅ RAG Chat
-- ✅ Analytics Dashboard
-- ✅ JWT Authentication
-- ⏳ Multi-document Chat
-- ⏳ Cloud Deployment
-- ⏳ Real-time Collaboration
+| Service | Platform |
+|----------|----------|
+| Frontend | Vercel |
+| Backend | Render |
+| Database | Neon PostgreSQL |
+| Vector Store | ChromaDB |
+
+---
+
+# 🎯 Future Enhancements
+
+- Multi-document Chat
+- Real-time AI Streaming
+- Team Workspaces
+- Document Versioning
+- Docker Deployment
+- Kubernetes Support
+- Agentic AI Workflows
+- Enterprise Authentication
 
 ---
 
 # 🤝 Contributing
 
-Contributions are welcome!
+Contributions are welcome.
 
-If you have ideas, improvements, or bug fixes, feel free to fork the repository and submit a pull request.
+Feel free to fork the repository, open issues, and submit pull requests.
 
 ---
 
 # 📄 License
 
-This project is licensed under the **MIT License**.
+Licensed under the MIT License.
+
+---
+
+# 👨‍💻 Developer
+
+**M Prashant Rao**
+
+AI Engineer • Machine Learning • Generative AI • Python • FastAPI • React
 
 ---
 
 <p align="center">
-Made with ❤️ using React, FastAPI, PostgreSQL, ChromaDB, and Generative AI.
+
+⭐ If you enjoyed this project, don't forget to leave a star.
+
+Made with ❤️ using FastAPI, React, PostgreSQL, ChromaDB, and Generative AI.
+
 </p>
