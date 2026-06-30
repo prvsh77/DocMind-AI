@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/dashboard.png" alt="DocMind AI Dashboard" width="100%">
+  <img src="src/assets/banner.png" alt="DocMind AI Dashboard" width="100%">
 </p>
 
 <h1 align="center">🧠 DocMind AI</h1>
