@@ -4,7 +4,7 @@ from app.api.auth import router as auth_router
 from app.api.documents import router as documents_router
 from app.api.search import router as search_router
 from app.api.chat import router as chat_router
-
+import os
 app = FastAPI(
     title="DocMind AI API",
     description="Backend API for DocMind AI Document Intelligence Project",
@@ -12,14 +12,19 @@ app = FastAPI(
 )
 
 # Configure CORS
+
+origins = os.getenv(
+    "CORS_ORIGINS",
+    "http://localhost:5173,https://doc-mind-ai-ashy.vercel.app"
+).split(",")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=[origin.strip() for origin in origins],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
 # Health endpoint
 @app.get("/health")
 def health_check():
