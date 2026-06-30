@@ -353,43 +353,38 @@ async def get_document(
     
     extracted_fields = default_fields
     confidence_score = 100
-    
-extracted_fields = default_fields
-confidence_score = 100
-confidence_scores = {}
+    confidence_scores = {}
 
-if ext_data:
-    json_data = ext_data.json_data or {}
+    if ext_data:
+        json_data = ext_data.json_data or {}
+        extracted_fields = json_data.get("fields", default_fields)
+        confidence_scores = json_data.get("confidence", {})
 
-    extracted_fields = json_data.get("fields", default_fields)
-    confidence_scores = json_data.get("confidence", {})
+        if confidence_scores:
+            scores = []
+            for value in confidence_scores.values():
+                try:
+                    scores.append(float(value))
+                except (TypeError, ValueError):
+                    pass
 
-    if confidence_scores:
-        scores = []
+            if scores:
+                confidence_score = int(sum(scores) / len(scores))
 
-        for value in confidence_scores.values():
-            try:
-                scores.append(float(value))
-            except (TypeError, ValueError):
-                pass
-
-        if scores:
-            confidence_score = int(sum(scores) / len(scores))
-                
     processed_at_str = ext_data.created_at.strftime("%b %d, %Y %I:%M %p") if ext_data else None
-    
+
     return DocumentDetailResponse(
-    id=doc.id,
-    name=doc.original_filename,
-    type=doc.file_type,
-    status=doc.status.value,
-    confidence=confidence_score,
-    uploadedAt=doc.uploaded_at.strftime("%b %d, %Y %I:%M %p"),
-    processedAt=processed_at_str,
-    extractedFields=extracted_fields,
-    confidenceScores=confidence_scores,
-    summary=doc.summary,
-)
+        id=doc.id,
+        name=doc.original_filename,
+        type=doc.file_type,
+        status=doc.status.value,
+        confidence=confidence_score,
+        uploadedAt=doc.uploaded_at.strftime("%b %d, %Y %I:%M %p"),
+        processedAt=processed_at_str,
+        extractedFields=extracted_fields,
+        confidenceScores=confidence_scores,
+        summary=doc.summary,
+    )
 
 @router.delete("/{document_id}")
 async def delete_document(
@@ -481,7 +476,8 @@ async def process_document(
         
         if ext_data:
             ext_data.json_data = extracted_payload
-            ext_data.created_at = datetime.datetime.now(datetime.UTC)        else:
+            ext_data.created_at = datetime.datetime.now(datetime.timezone.utc)
+        else:
             ext_data = ExtractedData(
                 document_id=doc.id,
                 json_data=extracted_payload

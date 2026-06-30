@@ -50,8 +50,6 @@ export default function Analytics() {
   // Derive top vendors dynamically from the document logs list
   const documentsList = docsData?.items || [];
   const vendorCounts: Record<string, number> = {};
-  const vendorAmounts: Record<string, number> = {};
-
   documentsList.forEach((d) => {
     if (d.vendor && d.vendor !== "-") {
       vendorCounts[d.vendor] = (vendorCounts[d.vendor] || 0) + 1;
@@ -126,7 +124,7 @@ export default function Analytics() {
                 <YAxis />
                 <Tooltip />
                 <Legend />
-                <Line type="monotone" dataKey="uploads" stroke="#10b981" strokeWidth={2} name="Uploaded" />
+                <Line type="monotone" dataKey="count" stroke="#10b981" strokeWidth={2} name="Uploaded" />
               </LineChart>
             </ResponsiveContainer>
           </CardContent>

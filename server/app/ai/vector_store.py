@@ -79,14 +79,23 @@ except Exception as e:
 # Global wrappers
 def add_to_vector_store(doc_id: str, embedding: List[float], text: str, metadata: Dict[str, Any]):
     global collection, CHROMA_AVAILABLE
-    if CHROMA_AVAILABLE and hasattr(collection, "add"):
+    if CHROMA_AVAILABLE:
         try:
-            collection.add(
-                ids=[doc_id],
-                embeddings=[embedding],
-                documents=[text],
-                metadatas=[metadata]
-            )
+            if hasattr(collection, "upsert"):
+                collection.upsert(
+                    ids=[doc_id],
+                    embeddings=[embedding],
+                    documents=[text],
+                    metadatas=[metadata]
+                )
+            else:
+                collection.delete(ids=[doc_id])
+                collection.add(
+                    ids=[doc_id],
+                    embeddings=[embedding],
+                    documents=[text],
+                    metadatas=[metadata]
+                )
         except Exception as e:
             logger.error(f"Failed to save in ChromaDB: {e}. Saving in fallback.")
             CHROMA_AVAILABLE = False
