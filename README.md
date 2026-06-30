@@ -1,188 +1,221 @@
-# DocMind AI - Intelligent Document Processing & RAG Cabinet
+<p align="center">
+  <img src="assets/dashboard.png" alt="DocMind AI Dashboard" width="100%">
+</p>
 
-DocMind AI is a production-ready, high-performance intelligent document processing (IDP) and retrieval-augmented generation (RAG) cabinet. It automates text extraction, document classification, structured metadata harvesting, semantic vector searches, and cited QA conversations over your files.
+<h1 align="center">🧠 DocMind AI</h1>
 
----
+<p align="center">
+  <strong>AI-Powered Document Intelligence Platform</strong>
+</p>
 
-## 🚀 Key Features
+<p align="center">
+  Upload • Extract • Search • Chat
+</p>
 
-* **Multi-Format Upload Pipeline**: Securely upload PDF, PNG, JPG, and JPEG files up to 20MB. Includes animated pipeline steps visualizer.
-* **Intelligent Document OCR**: Extracts full-text from images and PDFs using a hybrid `pypdf` digital text parser and PaddleOCR engine.
-* **AI Classification**: Automatically categorizes files into *Invoice*, *Receipt*, *Resume*, *Bank Statement*, *Contract*, or *Other* using Gemini / OpenAI LLM APIs.
-* **Structured Key-Value Harvesting**: Extracts critical information (e.g. total amounts, date, contract parties, or candidate resume skills) mapped to individual field-level confidence percentages.
-* **Persistent Vector Store (ChromaDB)**: Embeds document text using BGE-small dense models locally and indexes them under strict multi-tenant user security filters.
-* **Semantic Natural Language Search**: Query files conceptually (e.g., *"Show Amazon invoices over ₹50,000"*) matching highlights and scores.
-* **Retrieval-Augmented Chat (RAG)**: Chat with your document vault. Responses synthesize context from matching resources and dynamically append clickable citation cards leading to original documents.
-* **Data Exports**: Download raw OCR text (`.txt`), structured extraction payloads (`.json`), or search grids (`.csv`).
+<p align="center">
 
----
+![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript)
+![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi)
+![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql)
+![ChromaDB](https://img.shields.io/badge/ChromaDB-VectorDB-orange?style=for-the-badge)
+![Gemini](https://img.shields.io/badge/Gemini-AI-8E75FF?style=for-the-badge)
 
-## 🛠️ Architecture & System Design
-
-The application utilizes a decoupling model separating the API controller layers from core OCR engines, vector indexing, and generative answering pipelines.
-
-```mermaid
-graph TD
-    Client[React SPA Frontend] -->|HTTP Requests| API[FastAPI Backend Gateway]
-    
-    subgraph AI Pipeline
-        API -->|1. Run OCR| OCR[OCR Engine: pypdf / PaddleOCR]
-        API -->|2. Classify| Classifier[LLM Classifier]
-        API -->|3. Extract Fields| Extractor[LLM Extractor]
-        API -->|4. Generate Vector| Embeddings[Embeddings Engine: BGE-small / APIs]
-    end
-    
-    subgraph Data Stores
-        API -->|Save Document Metadata| DB[(PostgreSQL Database)]
-        Embeddings -->|Store Dense Vectors| Chroma[(ChromaDB Vector Store)]
-    end
-    
-    API -->|RAG Retrieval| Retriever[Semantic Retriever]
-    Retriever -->|Query Similarity| Chroma
-    API -->|Generative Answering| RAG[RAG QA Engine]
-    RAG -->|Synthesis Prompt| LLM[Gemini 1.5 Flash / GPT-4o Mini]
-```
+</p>
 
 ---
 
-## 🗄️ Database Entity Schema
+# 📖 Overview
 
-The PostgreSQL database maintains document registries, extracted properties, and user session log tracking.
+DocMind AI is a full-stack AI-powered Document Intelligence platform that enables users to upload documents, extract structured information using AI, perform semantic search, and chat with their documents using Retrieval-Augmented Generation (RAG).
 
-```mermaid
-erDiagram
-    USERS {
-        uuid id PK
-        string name
-        string email UK
-        string password_hash
-        string company
-        string role
-        datetime created_at
-    }
-    DOCUMENTS {
-        uuid id PK
-        uuid user_id FK
-        string filename
-        string original_filename
-        string file_type
-        string status
-        text ocr_text
-        text summary
-        datetime uploaded_at
-    }
-    EXTRACTED_DATA {
-        uuid id PK
-        uuid document_id FK
-        json json_data
-        datetime created_at
-    }
-    SEARCH_LOGS {
-        uuid id PK
-        uuid user_id FK
-        text query
-        datetime created_at
-    }
-    CHAT_LOGS {
-        uuid id PK
-        uuid user_id FK
-        text question
-        text answer
-        datetime created_at
-    }
-
-    USERS ||--o{ DOCUMENTS : "uploads"
-    USERS ||--o{ SEARCH_LOGS : "runs"
-    USERS ||--o{ CHAT_LOGS : "converses"
-    DOCUMENTS ||--|| EXTRACTED_DATA : "has"
-```
+Built with **FastAPI**, **React**, **PostgreSQL**, **ChromaDB**, and modern AI models, DocMind AI demonstrates an end-to-end document processing pipeline—from OCR to conversational AI.
 
 ---
 
-## 🔌 API Endpoint Summary
+# ✨ Features
 
-All API endpoints are hosted under the `/api` prefix and require JWT token authentication (except auth gateways).
+### 📄 Intelligent Document Processing
 
-| Category | Method | Path | Description |
-| :--- | :--- | :--- | :--- |
-| **Authentication** | `POST` | `/api/auth/register` | Registers a new account. |
-| | `POST` | `/api/auth/login` | Logs in and yields access/refresh tokens. |
-| **Documents** | `POST` | `/api/documents` | Uploads a raw document. |
-| | `GET` | `/api/documents` | Lists all user documents (paginated & filtered). |
-| | `GET` | `/api/documents/stats` | Computes dashboard analytics and chart metrics. |
-| | `GET` | `/api/documents/{id}` | Fetches metadata, summary, and fields. |
-| | `POST` | `/api/documents/{id}/process` | Runs OCR, classification, extraction, and embedding. |
-| | `GET` | `/api/documents/{id}/ocr` | Returns raw OCR text snippet. |
-| | `DELETE` | `/api/documents/{id}` | Deletes document and its vector indices. |
-| **Semantic Search**| `POST`/`GET`| `/api/search` | Search files semantically. |
-| **RAG Answering** | `POST` | `/api/chat` | Answer questions citing source documents. |
-| **Health** | `GET` | `/health` | Live service health check status. |
+- Upload PDF, PNG, and JPG documents
+- OCR-based text extraction
+- AI-powered document classification
+- Structured information extraction
+- Automatic document summarization
+
+### 🔍 Semantic Search
+
+- Vector embeddings with BAAI BGE
+- ChromaDB vector database
+- Similarity search
+- Highlighted search results
+- AI-generated summaries
+
+### 💬 AI Chat (RAG)
+
+- Retrieval-Augmented Generation
+- Context-aware document conversations
+- Source citations
+- Multi-document retrieval
+- Local embedding support
+
+### 📊 Analytics Dashboard
+
+- Document statistics
+- Upload trends
+- Processing success metrics
+- Confidence score analysis
+- Search & chat analytics
+
+### 🔐 Authentication
+
+- JWT Authentication
+- User Registration & Login
+- Protected Routes
+- Secure API Access
 
 ---
 
-## ⚙️ Installation & Docker Setup
+# 🛠 Tech Stack
 
-To spin up the entire application locally, you only need Docker Compose.
+## Frontend
 
-### 1. Configure Credentials
-Create a `.env` file in the `server` directory (or export variables in your environment):
+- React 19
+- TypeScript
+- Vite
+- Tailwind CSS
+- React Query
+- Recharts
+- React Hook Form
+- Zod
+
+## Backend
+
+- FastAPI
+- SQLAlchemy
+- Alembic
+- PostgreSQL
+- JWT Authentication
+- AsyncPG
+
+## AI & Machine Learning
+
+- PaddleOCR
+- Google Gemini
+- OpenAI
+- ChromaDB
+- BAAI BGE Embeddings
+- Semantic Search
+- Retrieval-Augmented Generation (RAG)
+
+---
+
+# 📸 Application Preview
+
+<p align="center">
+<img src="assets/dashboard.png" width="100%">
+</p>
+
+---
+
+# 🚀 Getting Started
+
+## Clone the Repository
+
 ```bash
-GEMINI_API_KEY="your-gemini-api-key-here"
-# OR
-# OPENAI_API_KEY="your-openai-api-key-here"
-```
-> [!NOTE]
-> If no API keys are provided, the server initializes and boots up safely using local heuristics for classification, metadata extraction, and QA synthesis.
+git clone https://github.com/prvsh77/DocMind-AI.git
 
-### 2. Startup Docker Containers
-```bash
-cd server
-docker compose up --build
+cd DocMind-AI
 ```
-This builds and launches:
-1. **PostgreSQL Container (`db`)**: Exposing port `5432`.
-2. **FastAPI Web Container (`web`)**: Running migrations, auto-seeding sample demo files if empty, and exposing port `8000`.
 
-### 3. Startup Frontend
-Install dependencies and boot up the Vite server:
+## Frontend
+
 ```bash
 npm install
+
 npm run dev
 ```
-Open [http://localhost:5173](http://localhost:5173) in your browser. Log in using the seeded profile:
-* **Username**: `demo@example.com`
-* **Password**: `password123`
+
+## Backend
+
+```bash
+cd server
+
+python -m venv .venv
+
+.venv\Scripts\activate
+
+pip install -r requirements.txt
+
+python -m alembic upgrade head
+
+python seed.py
+
+python -m uvicorn app.main:app --reload --port 8080
+```
 
 ---
 
-## 📂 Project Structure
+# 📂 Project Structure
 
 ```
-DocMind_AI/
+DocMind-AI
 │
-├── server/
-│   ├── app/
-│   │   ├── ai/               # OCR, Embeddings, Classifier, Extractor, RAG
-│   │   ├── api/              # FastAPI Routers (Auth, Documents, Search, Chat)
-│   │   ├── auth/             # JWT dependency verification and password utilities
-│   │   ├── database/         # Session local postgres pool engine bind
-│   │   ├── models/           # Declarative mapping models
-│   │   ├── schemas/          # Pydantic validation serializers
-│   │   └── main.py           # Application entrypoint registration
+├── server
+│   ├── app
+│   │   ├── ai
+│   │   ├── api
+│   │   ├── auth
+│   │   ├── database
+│   │   ├── models
+│   │   └── schemas
 │   │
-│   ├── migrations/           # Alembic database schemas versionings
-│   ├── uploads/              # Local disk document files storage
-│   ├── Dockerfile
-│   ├── entrypoint.sh         # Startup check, migration, auto-seeding scripts
-│   ├── seed.py               # 21 multi-type document database populator
-│   └── requirements.txt      # PyPI packages index
+│   └── migrations
 │
-├── src/                      # React Frontend Source
-│   ├── app/
-│   │   ├── api/              # Axios http call definitions and React Query hooks
-│   │   ├── components/       # Layouts and generic Shadcn UI wrappers
-│   │   └── pages/            # View components (Dashboard, Documents, Search, Chat)
-│   └── main.tsx
+├── src
+│   ├── app
+│   ├── components
+│   ├── pages
+│   └── api
 │
-└── README.md
+├── assets
+│
+├── README.md
+└── package.json
 ```
+
+---
+
+# 🎯 Roadmap
+
+- ✅ OCR Processing
+- ✅ AI Classification
+- ✅ Structured Data Extraction
+- ✅ Semantic Search
+- ✅ RAG Chat
+- ✅ Analytics Dashboard
+- ✅ JWT Authentication
+- ⏳ Multi-document Chat
+- ⏳ Cloud Deployment
+- ⏳ Real-time Collaboration
+
+---
+
+# 🤝 Contributing
+
+Contributions are welcome!
+
+If you have ideas, improvements, or bug fixes, feel free to fork the repository and submit a pull request.
+
+---
+
+# 📄 License
+
+This project is licensed under the **MIT License**.
+
+---
+
+<p align="center">
+Made with ❤️ using React, FastAPI, PostgreSQL, ChromaDB, and Generative AI.
+</p>
