@@ -1,0 +1,41 @@
+version: "3.8"
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: docmind-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: docmind
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d docmind"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: docmind-web
+    command: /workspace/entrypoint.sh
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://postgres:postgres@db:5432/docmind
+      - JWT_SECRET_KEY=secure-token-development-only-secret-987654321
+      - UPLOAD_DIR=/workspace/uploads
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - .:/workspace
+      - ./uploads:/workspace/uploads
+
+volumes:
+  pgdata:
